@@ -58,7 +58,7 @@ tutors.delete('/delete-class/:id',async (req,res)=>{
 tutors.post('/add-student',async (req,res)=>{
     const { email,id } = req.body
    
-    //try{
+    try{
        
         const newModule = await Attendance.findOne({_id:id})
         const user = await Users.findOne({email})
@@ -68,10 +68,10 @@ tutors.post('/add-student',async (req,res)=>{
          await user.save()
          res.send(student)
     
-   // }catch(err){
+   }catch(err){
         res.status(500).json(err)
 
-    //}
+    }
    
     
 })
@@ -180,10 +180,10 @@ tutors.post('/update-class/:id',async (req,res)=>{
 
     
 
-tutors.get('/my-class/',async (req,res)=>{
+tutors.get('/my-class',async (req,res)=>{
    
     try{
-           const found = await Attendance.find({tutor:req.id})
+           const found = await Attendance.find({tutor:req.query.id})
          
            res.status(200).json(found)
     

@@ -2,6 +2,7 @@ const express = require("express")
 const dotenv = require("dotenv")
 const morgan = require("morgan")
 const bodyparser = require("body-parser")
+const cors = require("cors")
 dotenv.config({path:'./config.env'})
 
 //const router = require('./server/routes/router.js')
@@ -21,7 +22,7 @@ const PORT = process.env.PORT || 8080
 const app = express();
 
 
-
+app.use(cors())
 app.use(morgan('tiny'))
 app.use(express.json())
 connectDB()

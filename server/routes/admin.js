@@ -20,14 +20,14 @@ admin.delete('/delete-account/',async (req,res)=>{
 
 admin.get('/all-accounts/',async (req,res)=>{
    
-    try{
+   try{
            const all = await Users.find()
            res.status(200).json(all)
     
     }catch(err){
         res.status(500).json(err)
 
-    }
+   }
    
     
 })
