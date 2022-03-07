@@ -21,6 +21,12 @@ var schema = new mongoose.Schema({
         {
             id:String,
             name:String,
+            email:String,
+            gender:String,
+            currentAttendance:{
+                type:String,
+                default:'P'
+            },
             attendance:[
                 {
                     status:String,

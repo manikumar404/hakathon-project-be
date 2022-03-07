@@ -14,6 +14,7 @@ tutors.post('/add-class',async (req,res)=>{
         const { className, moduleCode, 
             tutor,classStrength,credit } = req.body
         try {
+            const userList = new Users({id:tutor})
             const newAttendance = new Attendance(
                 {
                     className,
@@ -25,6 +26,8 @@ tutors.post('/add-class',async (req,res)=>{
                 }
             )
             const attendance = await newAttendance.save()
+            userList.moduleList.push({className,moduleCode })
+            await userList.save()
             res.send(attendance)
     
         } catch (err) {
@@ -62,11 +65,15 @@ tutors.post('/add-student',async (req,res)=>{
        
         const newModule = await Attendance.findOne({_id:id})
         const user = await Users.findOne({email})
-         newModule.students.push({id:user._id,name:user.name})
-         user.moduleList.push({moduleName:newModule.className,id:newModule._id})
+        const added = {_id:user._id,id:user.id,name:user.name,email:user.email,gender:user.gender,attendance:[]}
+         newModule.students.push(added)
+         user.moduleList.push({id:newModule._id,className:newModule.className,moduleCode:newModule.moduleCode})
+         user.moduleList = [...new Map(user.moduleList.map(item =>
+            [item['_id'], item])).values()];
+          
         const student = await newModule.save()
          await user.save()
-         res.send(student)
+         res.send(added)
     
    }catch(err){
         res.status(500).json(err)
@@ -112,6 +119,28 @@ tutors.post('/add-attendance',async (req,res)=>{
         res.status(500).json(err)
 
     }
+   
+    
+})
+
+tutors.post('/take-attendance',async (req,res)=>{
+    const {id,attendance} = req.body
+    const newModule = await Attendance.findOne({_id:id})
+   
+   try{
+       
+   
+      for(const att of attendance) { 
+        newModule.students[att.serial].attendance.push({status:att.status})
+        
+        }
+        const attendanceS = await newModule.save()
+        res.send(attendanceS.students)
+    
+   }catch(err){
+        res.status(500).json(err)
+
+   }
    
     
 })
@@ -184,7 +213,7 @@ tutors.get('/my-class',async (req,res)=>{
    
     try{
            const found = await Attendance.find({tutor:req.query.id})
-         
+          
            res.status(200).json(found)
     
     }catch(err){

@@ -10,6 +10,18 @@ var schema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    gender : {
+        type: String,
+        enum : ['Male','Female','Others'],
+        required: true,
+       
+    },
+    id : {
+        type: String,
+        required: true,
+        unique: true
+    },
+    
      password : {
          type:String,
          required:true

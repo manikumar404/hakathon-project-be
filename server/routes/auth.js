@@ -12,49 +12,50 @@ auth.post('/register',async (req,res)=>{
     const {error} = userValidator.validate(req.body)
     const salt = await  bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password,salt)
-    if(error) return res.status(400).json(error.details)
-    try{
+    if(error) {
+        console.log(error)
+        return res.status(400).json(error.details)
+    }
+   try{
         const newUser = new Users(
             {
                 name:req.body.name,
                 email:req.body.email,
+                id:req.body.id,
+                gender:req.body.gender,
                 password:hashedPassword,
                 userType:req.body.userType
             }
         )
         const user = await newUser.save()
-        res.send(user)
+        res.status(200).send(user)
 
-    }catch(err){
+     }catch(err){
         res.status(500).json(err)
 
-    }
+     }
    
     
 })
 
 auth.post('/login',async (req,res)=>{
-    const {password,email} = req.body
-    
-    
-   // try{
+    const {password,email} = req.body    
+   try{
         const user = await Users.findOne({email})
-       //const user = await Users.find()
-        !user && res.status(400).json("no credencials")
+       !user && res.status(400).json("Email not found")
         const authenticate = await bcrypt.compare(password,user.password)
         if(!authenticate) return res.status(401).json("wrong password")
 
-       // const {password,...others} = user._doc
-      // user.password="0"
+      user.password="0"
       const token = jwt.sign({_id:user._id},process.env.SECRET)
         res.status(200)
         res.header('auth-token',token)
-        res.send(parseJWT(token))
+        res.send(user)
+  }catch(err){
+      // res.json(err)
+      console.log(err)
 
-  //  }catch(err){
-        res.status(500).json(err)
-
-  //  }
+  }
    
     
 })
