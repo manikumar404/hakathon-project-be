@@ -1,5 +1,4 @@
 const express = require('express')
-const Class = require('../model/class.js')
 const Attendance = require('../model/attendance.js')
 const Users = require('../model/users.js')
 const classValidator = require('../validators/classValidator.js')
@@ -14,7 +13,7 @@ tutors.post('/add-class',async (req,res)=>{
         const { className, moduleCode, 
             tutor,classStrength,credit } = req.body
         try {
-            const userList = new Users({id:tutor})
+            const userList = await Users.findOne({_id:tutor})
             const newAttendance = new Attendance(
                 {
                     className,
@@ -28,10 +27,12 @@ tutors.post('/add-class',async (req,res)=>{
             const attendance = await newAttendance.save()
             userList.moduleList.push({className,moduleCode })
             await userList.save()
-            res.send(attendance)
+            res.send({className,moduleCode})
     
         } catch (err) {
-            res.status(500).json(err)
+            res.status(400).json("error occured! please check your inputs and try again")
+      
+           
     
         }
     
@@ -213,6 +214,21 @@ tutors.get('/my-class',async (req,res)=>{
    
     try{
            const found = await Attendance.find({tutor:req.query.id})
+          
+           res.status(200).json(found)
+    
+    }catch(err){
+        res.status(500).json(err)
+
+    }
+   
+    
+})
+
+tutors.get('/select-class',async (req,res)=>{
+   
+    try{
+           const found = await Attendance.findOne({moduleCode:req.query.moduleCode})
           
            res.status(200).json(found)
     

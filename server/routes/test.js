@@ -1,5 +1,5 @@
 const express = require('express')
-const modules = require('../model/modules.js')
+//const modules = require('../model/modules.js')
 
 const test = express.Router()
 
@@ -12,7 +12,7 @@ test.post('/module/add-student', async (req, res) => {
     // if (error) return res.status(400).json(error)
     const { id ,sid } = req.body
 
-        const newModule = await modules.findOne({_id:id})
+        //const newModule = await modules.findOne({_id:id})
          newModule.students.push({id:sid})
         const attendance = await newModule.save()
          res.send(attendance)
