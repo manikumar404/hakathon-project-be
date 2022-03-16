@@ -20,14 +20,16 @@ students.get('/my-attendance',async (req,res)=>{
    }
  })
 
- students.post('/put-present/:id', async (req,res)=>{
+ students.post('/put-present/', async (req,res)=>{
      const id = req.body.id
      try{
-        const attendance = await Attendance.findOne({id:req.params.id})
+        const attendance = await Attendance.findOne({_id:req.query._id})
         const index = attendance.students.findIndex(stud => stud.id===id)
         const attList = await attendance.students[index].push({status:'P'}).save()
+        const attListOfOne = await attendance.students[index]
+
        
-        res.status(200).json(index)
+        res.status(200).json(attListOfOne)
 
 
      }

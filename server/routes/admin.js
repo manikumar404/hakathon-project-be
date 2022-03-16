@@ -2,27 +2,29 @@ const express = require("express");
 const Users = require("../model/users.js");
 const Attendance = require("../model/attendance.js");
 const currentState = require("../model/properties");
-
+const bcrypt = require('bcrypt')
 const admin = express.Router();
 
 admin.delete("/delete-account/", async (req, res) => {
   try {
-    const deleted = await Users.findOneAndDelete({ email: req.query.email });
+    const deleted = await Users.findOneAndDelete({ _id: req.query._id });
     res.status(200).json("successful");
   } catch (err) {
     res.status(500).json(err);
   }
 });
+
 admin.delete("/delete-class/", async (req, res) => {
   try {
     const deleted = await Attendance.findOneAndDelete({
-      email: req.query.moduleCode,
+      _id: req.query._id,
     });
     res.status(200).json("successful");
   } catch (err) {
     res.status(500).json(err);
   }
 });
+
 admin.get("/all-classes/", async (req, res) => {
   try {
     const classes = await Attendance.find();
@@ -81,5 +83,29 @@ admin.get("/token/", async (req, res) => {
     res.status(500).json(err);
   }
 });
+
+admin.post('/update-password',async (req,res)=>{
+  // const {error} = userValidator.validate(req.body)
+  // if(error) return res.status(400).json(error.details[0].message)
+
+  const salt = await  bcrypt.genSalt(10)
+  console.log(salt)
+  console.log(req.body)
+  const hashedPassword = await bcrypt.hash(req.body.newPassword,salt)
+ 
+  try{
+         const updated = await Users.findOneAndUpdate({email:req.body.email},
+          {password:hashedPassword})
+        !updated && res.status(401).json("you are not allowed to update")
+
+         res.status(200).json("successful")
+  
+  }catch(err){
+      res.status(500).json(err)
+
+  }
+ 
+  
+})
 
 module.exports = admin;

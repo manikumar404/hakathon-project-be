@@ -33,7 +33,24 @@ var schema = new mongoose.Schema({
         
     },
     userGroup:String,
-    moduleList:Array
+    moduleList:[
+        {
+            id:{
+                type:String,
+                required:true
+            },
+            className:{
+                type:String,
+                required:true
+            },
+            moduleCode:{
+                type:String,
+                required:true
+            }
+
+
+        }
+    ]
     
     
  
