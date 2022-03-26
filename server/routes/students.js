@@ -1,45 +1,76 @@
-const express = require('express')
-const Users = require('../model/users.js')
-const Attendance = require('../model/attendance.js')
-const { stdin } = require('nodemon/lib/config/defaults')
+const express = require("express");
+const modulesRecord = require("../model/modulesRecord.js");
+const modulesMapping = require("../model/moduleMapping.js");
+const attendanceRecord = require("../model/attendanceRecord.js");
 
-const students = express.Router()
-students.get('/my-attendance',async (req,res)=>{
-    const email = req.query.email
-    try{
-     const attendance = await Attendance.findOne({moduleCode:req.query.moduleCode})
-     
-     const index = attendance.students.findIndex(stud => stud.email===email)
-     const attList = attendance.students[index]
-     console.log(email)
-    
-     res.status(200).json(attList)
-   }
-    catch(err){
-       res.status(500).json(err)
-   }
- })
+const students = express.Router();
 
- students.post('/put-present/', async (req,res)=>{
-     const id = req.body.id
-     try{
-        const attendance = await Attendance.findOne({_id:req.query._id})
-        const index = attendance.students.findIndex(stud => stud.id===id)
-        const attList = await attendance.students[index].push({status:'P'}).save()
-        const attListOfOne = await attendance.students[index]
+students.get("/my-class", async (req, res) => {
+  const { studentId } = req.query; //userId is the _id of student
+  try {
+    if (req.user._id === studentId) {
+      const module_mapping = await modulesMapping.find({ userId: studentId });
 
-       
-        res.status(200).json(attListOfOne)
+      const idList = [];
+      for (const x of module_mapping) {
+        idList.push(x.moduleId);
+      }
 
+      const myClass = await modulesRecord.find({
+        _id: { $in: idList },
+      });
 
-     }
-     catch(err){
-        res.status(500).json(err)
+      return res.status(200).json(myClass);
+    } else {
+      return res.status(401).json("you are not authorized!");
     }
+  } catch (err) {
+    res.status(500).json("Internal server error");
+  }
+});
 
+students.get("/my-attendance", async (req, res) => {
+  const { moduleId, studentId } = req.query;
+  try {
+    if (req.user._id === studentId) {
+      const attendanceList = await attendanceRecord.find({
+        moduleId,
+        studentId,
+      });
 
- })
- 
+      res.status(200).json(attendanceList);
+    } else {
+      return res.status(401).json("Authorization error");
+    }
+  } catch (err) {
+    res.status(500).json("Internal server error");
+  }
+});
 
+students.post("/put-present/", async (req, res) => {
+  const { moduleId, studentId } = req.query;
+  try {
+    if (req.user._id === studentId) {
+      const module_record = await modulesRecord.findOne({ _id: moduleId });
+      if (module_record.attendanceAllowed) {
+        const attendance_record = new attendanceRecord({
+          status: req.body.status,
+          moduleId,
+          studentId,
+          tutorId: module_record.tutorId,
+        });
 
-module.exports =  students
+        const saved = await attendance_record.save();
+        return res.status(200).json(saved);
+      } else {
+        return res.status(401).json("Attendance is closed");
+      }
+    } else {
+      return res.status(401).json("Authorization error");
+    }
+  } catch (err) {
+    res.status(500).json("Internal server error");
+  }
+});
+
+module.exports = students;
