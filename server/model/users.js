@@ -8,7 +8,6 @@ var schema = new mongoose.Schema({
     email : {
         type: String,
         required: true,
-        unique: true
     },
     gender : {
         type: String,
@@ -16,45 +15,22 @@ var schema = new mongoose.Schema({
         required: true,
        
     },
-    id : {
-        type: String,
-        required: true,
-        unique: true
-    },
-    
      password : {
          type:String,
          required:true
     },
     userType:{
         type:String,
-        enum : ['student','tutor','admin'],
-        default: 'student'
+        enum : ['User','Admin'],
+        default: 'user'
         
     },
-    userGroup:String,
-    moduleList:[
-        {
-            id:{
-                type:String,
-                required:true
-            },
-            className:{
-                type:String,
-                required:true
-            },
-            moduleCode:{
-                type:String,
-                required:true
-            }
-
-
-        }
-    ]
-    
-    
- 
-   
+    contact: String,
+    cid: String,
+    location:{
+        dzongkhag: String,
+        geog: String,
+    }
 },
 {timestamps:true}
 )

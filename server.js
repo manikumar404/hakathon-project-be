@@ -9,8 +9,7 @@ dotenv.config({ path: "./config.env" });
 const auth = require("./server/routes/auth.js");
 const admin = require("./server/routes/admin.js");
 const common = require("./server/routes/common.js");
-const students = require("./server/routes/students.js");
-const tutors = require("./server/routes/tutors.js");
+const commonUsers = require("./server/routes/commonUsers.js");
 const test = require("./server/routes/test.js");
 
 const connectDB = require("./server/database/connection");
@@ -30,10 +29,6 @@ app.use(bodyparser.urlencoded({ extended: true }));
 app.use("/css", express.static(path.resolve(__dirname, "assets/css")));
 
 app.set("view engine", "ejs");
-//app.set('views',path.resolve(__dirname,'views/ejs'))
-// app.get('/user',(req,res)=>{
-//     res.send("attendance management system 88")
-// })
 app.use("/auth", auth);
 app.use(
   "/admin",
@@ -50,30 +45,9 @@ app.use(
 );
 app.use("/common", verify, common);
 app.use(
-  "/students",
+  "/commonUsers",
   verify,
-  (req, res, next) => {
- 
-    if (req.user.userType === "student") {
-      next();
-    } else {
-      return res.status(401).json("you dont have access!");
-    }
-  },
-  students
-);
-app.use(
-  "/tutors",
-  verify,
-  (req, res, next) => {
-
-    if (req.user.userType === "tutor") {
-      next();
-    } else {
-      return res.status(401).json("you dont have access!");
-    }
-  },
-  tutors
+  commonUsers
 );
 app.use("/test", test);
 

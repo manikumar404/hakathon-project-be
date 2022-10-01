@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
 module.exports = function verify(req,res,next){
     const token = req.headers.authorization
-    if(!token) return res.status(401).json('you have to login first')
+    if(!token) return res.status(401).json('your session has expired please login !')
    try{
     const access = jwt.verify(token,process.env.SECRET)
     req.user = access

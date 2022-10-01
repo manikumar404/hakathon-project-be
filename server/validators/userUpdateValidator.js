@@ -1,11 +1,17 @@
 const joi = require('joi')
 
 const userUpdateValidator = joi.object({
-
-    name:joi.string().min(5).required(),
+    userId: joi.string().required(),
+    name:joi.string().min(5),
     gender:joi.string().valid('Male','Female','Others'),
-    email:joi.string().min(5).email().required(),
-    department:joi.string().min(3).required()
+    email:joi.string().min(5).email(),
+    contact: joi.string(),
+    cid: joi.string(),
+    userType: joi.string().valid('Admin','User'),
+    location: joi.object({
+        dzongkhag: joi.string(),
+        geog: joi.string()
+    })
 
 })
 
