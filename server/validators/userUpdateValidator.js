@@ -7,7 +7,10 @@ const userUpdateValidator = joi.object({
     email:joi.string().min(5).email(),
     contact: joi.string(),
     cid: joi.string(),
-    userType: joi.string().valid('Admin','User'),
+    profile: joi.string(),
+    bio: joi.string(),
+    occupation: joi.string(),
+    userType: joi.string(),
     location: joi.object({
         dzongkhag: joi.string(),
         geog: joi.string()

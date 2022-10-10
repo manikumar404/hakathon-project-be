@@ -12,13 +12,15 @@ var schema = new mongoose.Schema({
     gender : {
         type: String,
         enum : ['Male','Female','Others'],
-        required: true,
        
     },
      password : {
          type:String,
          required:true
     },
+    profile: String,
+    bio: String,
+    occupation: String,
     userType:{
         type:String,
         enum : ['User','Admin'],

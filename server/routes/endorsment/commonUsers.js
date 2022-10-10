@@ -1,21 +1,24 @@
 const express = require("express");
-const endorsementValidator = require("../validators/endorsementValidator.js");
-const Users = require("../model/users.js");
-const Endorsement = require("../model/endorsement.js");
-const commentValidator = require("../validators/comment-validator.js");
+const upload = require("../../services/fileUploader")
+const endorsementValidator = require("../../validators/endorsementValidator.js");
+const Users = require("../../model/users.js");
+const Endorsement = require("../../model/endorsement.js");
+const commentValidator = require("../../validators/comment-validator.js");
 
-const commonUsers = express.Router();
+const commonUsersEndorsement = express.Router();
 
-commonUsers.post("/add-endorsement", async (req, res) => {
+
+commonUsersEndorsement.post("/add-endorsement",upload.single('file'), async (req, res) => {
   try {
+    const image = process.env.BASE_URI+'/uploads/' + req.file.filename
       const { error } = endorsementValidator.validate({
         title: req.body.title,
         description: req.body.description,
       });
 
       if (error) return res.status(400).json(error.details[0].message);
-      const {title, description,image} = req.body;
-      const user = await Users.findById(req.user._id)
+      const {title, description} = req.body;
+      const user = await Users.findById(req.user._id);        
       const endorsement = new Endorsement({
         title,
         description,
@@ -34,11 +37,12 @@ commonUsers.post("/add-endorsement", async (req, res) => {
       return res.status(200).json(endorsementSaved);
    
   } catch (err) {
+    console.log(err)
     res.status(400).json("Could not create endorsment!");
   }
 });
 
-commonUsers.post("/edit-endorsement", async (req, res) => {
+commonUsersEndorsement.post("/edit-endorsement", async (req, res) => {
     try {
         const { error } = endorsementValidator.validate({
           title: req.body.title,
@@ -65,7 +69,7 @@ commonUsers.post("/edit-endorsement", async (req, res) => {
 
 
 
-commonUsers.post("/delete-endorsement", async (req, res) => {
+commonUsersEndorsement.post("/delete-endorsement", async (req, res) => {
   const id = req.body.endorsementId;
 
   try {
@@ -77,7 +81,7 @@ commonUsers.post("/delete-endorsement", async (req, res) => {
   }
 });
 
-commonUsers.post("/comment-endorsement", async (req, res) => {
+commonUsersEndorsement.post("/comment-endorsement", async (req, res) => {
     try {
         const { error } = commentValidator.validate(req.body);
   
@@ -106,47 +110,4 @@ commonUsers.post("/comment-endorsement", async (req, res) => {
     }
   });
 
-  commonUsers.get("/get-endorsement", async (req, res) => {
-    const id = req.query.endorsementId;
-  
-    try {
-        const endorsement = await Endorsement.findById(id)
-        return res.status(200).json(endorsement);
-     
-    } catch (err) {
-      res.status(500).json("could not get specified endorsment!");
-    }
-  });
-
-  commonUsers.get("/get-endorsements-of-user", async (req, res) => {
-    const id = req.query.userId;
-  
-    try {
-        const endorsements = await Endorsement.find({"user.id":id})
-        return res.status(200).json(endorsements);
-     
-    } catch (err) {
-      res.status(500).json("could not get endorsments!");
-    }
-  });
-
-  commonUsers.get("/get-endorsements", async (req, res) => {
-    const {skip,limit} = req.query;
-    try {
-        const endorsements = await Endorsement.find({},
-          'title description image user comments',
-          {skip,limit})
-        return res.status(200).json(endorsements);
-     
-    } catch (err) {
-      console.log(err)
-      res.status(500).json("could not get endorsments!");
-    }
-  });
-
-
-
-
-
-
-module.exports = commonUsers;
+module.exports = commonUsersEndorsement;

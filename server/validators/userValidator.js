@@ -9,6 +9,9 @@ const userValidator = joi.object({
     contact: joi.string().required(),
     cid: joi.string(),
     userType: joi.string().valid('Admin','User'),
+    profile: joi.string(),
+    bio: joi.string(),
+    occupation: joi.string(),
     location: joi.object({
         dzongkhag: joi.string(),
         geog: joi.string()

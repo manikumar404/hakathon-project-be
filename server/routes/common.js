@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const Users = require("../model/users.js");
 const passwordValidator = require("../validators/passwordValidator.js");
 const userUpdateValidator = require("../validators/userUpdateValidator.js");
+const upload = require("../services/fileUploader")
+
 
 const common = express.Router();
 
@@ -26,8 +28,10 @@ common.post("/update-password", async (req, res) => {
   }
 });
 
-common.post("/update-detail", async (req, res) => {
+common.post("/update-detail", upload.single('file'),async (req, res) => {
   try {
+    const image = process.env.BASE_URI+'/uploads/' + req.file.filename   
+     console.log(req)
     const { error } = userUpdateValidator.validate(req.body);
     if (error) return res.status(400).json(error.details[0].message);
       const updated = await Users.findOneAndUpdate(
@@ -38,6 +42,9 @@ common.post("/update-detail", async (req, res) => {
             email: req.body.email,
             gender: req.body.gender,
             contact: req.body.contact,
+            profile: image,
+            bio: req.body.bio,
+            occupation: req.body.occupation,
             cid: req.body.cid,
             userType: req.body.userType,
             location: req.body.location
