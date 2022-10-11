@@ -23,6 +23,10 @@ commonUsersEndorsement.post("/add-endorsement",upload.single('file'), async (req
         title,
         description,
         image,
+        goal: req.body.goal,
+    roleTitle: req.body.roleTitle,
+    category: req.body.category,
+    roleDescription: req.body.roleDescription,
         user: {
         name: user.name,
         id: user._id,
@@ -86,11 +90,12 @@ commonUsersEndorsement.post("/comment-endorsement", async (req, res) => {
         const { error } = commentValidator.validate(req.body);
   
         if (error) return res.status(400).json(error.details[0].message);
-        const {comment,endorsementId} = req.body;
+        const {comment,rating,endorsementId} = req.body;
         const user = await Users.findById(req.user._id)
         const endorsement = await Endorsement.findById(endorsementId)
         endorsement.comments.unshift({
             comment,
+            rating,
             user:{
                 name: user.name,
                 id: user._id,
@@ -107,6 +112,28 @@ commonUsersEndorsement.post("/comment-endorsement", async (req, res) => {
      
     } catch (err) {
       res.status(400).json("Could not comment endorsment!");
+    }
+  });
+
+  commonUsersEndorsement.post("/endorse-endorsement", async (req, res) => {
+    try {
+        const { error } = commentValidator.validate({comment:req.body.comment,endorsementId: req.body.endorsementId});
+  
+        if (error) return res.status(400).json(error.details[0].message);
+        const {comment,email,endorsementId} = req.body;
+        const user = await Users.findById(req.user._id)
+        const endorsement = await Endorsement.findById(endorsementId)
+        endorsement.endorse.unshift({
+            comment,
+            email,  
+        })
+  
+        const endorsementSaved = await endorsement.save();
+  
+        return res.status(200).json(endorsementSaved);
+     
+    } catch (err) {
+      res.status(400).json("Could not endorse!");
     }
   });
 

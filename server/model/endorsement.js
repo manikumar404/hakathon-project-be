@@ -10,6 +10,10 @@ var schema = new mongoose.Schema({
         required: true,
     },
     image: String,
+    goal: Number,
+    roleTitle: String,
+    category: String,
+    roleDescription: String,
     user : {
         name: String,
         id: String,
@@ -21,10 +25,17 @@ var schema = new mongoose.Schema({
             geog: String,
         }
    },
-    
+   endorse: [
+    {
+        email: String,
+        comment: String,
+    }
+   ],
+   
     comments:[
         {
             comment: String,
+            rating: Number,
             user : {
                 name: String,
                 id: String,

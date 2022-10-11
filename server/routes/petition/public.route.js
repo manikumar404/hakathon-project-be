@@ -31,7 +31,7 @@ publicUsersPetition.get("/get-petition", async (req, res) => {
     const {skip,limit} = req.query;
     try {
         const petitions = await Petition.find({},
-          'title description image user comments',
+          'title description image user comments category goal signatures',
           {skip,limit})
         return res.status(200).json(petitions);
      

@@ -10,6 +10,8 @@ var schema = new mongoose.Schema({
         required: true,
     },
     image: String,
+    category: String,
+    goal: Number,
     user : {
         name: String,
         id: String,
@@ -23,7 +25,10 @@ var schema = new mongoose.Schema({
    },
     signatures: [
         {
-            email: String
+            email: String,
+            name: String,
+            comments: String,
+            addtrss: String,
         }
     ],
     comments:[

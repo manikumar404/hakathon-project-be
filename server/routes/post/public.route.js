@@ -31,7 +31,7 @@ publicUsersPost.get("/get-post", async (req, res) => {
     const {skip,limit} = req.query;
     try {
         const posts = await Post.find({},
-          'title description image user comments',
+          'title description image user comments category',
           {skip,limit})
         return res.status(200).json(posts);
      

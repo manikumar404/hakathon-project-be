@@ -10,6 +10,7 @@ var schema = new mongoose.Schema({
         required: true,
     },
     image: String,
+    category: String,
     user : {
         name: String,
         id: String,

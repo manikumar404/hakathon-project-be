@@ -17,12 +17,14 @@ commonUsersPetition.post("/add-petition",upload.single('file'), async (req, res)
       });
 
       if (error) return res.status(400).json(error.details[0].message);
-      const {title, description} = req.body;
+      const {title, description,category,goal} = req.body;
       const user = await Users.findById(req.user._id);        
       const petition = new Petition({
         title,
         description,
         image,
+        category,
+        goal,
         user: {
         name: user.name,
         id: user._id,
@@ -107,6 +109,29 @@ commonUsersPetition.post("/comment-petition", async (req, res) => {
      
     } catch (err) {
       res.status(400).json("Could not comment petition!");
+    }
+  });
+
+  commonUsersPetition.post("/sign-petition", async (req, res) => {
+    try {
+        const { error } = commentValidator.validate(req.body);
+  
+        if (error) return res.status(400).json(error.details[0].message);
+        const {comments,email,name,address,petitionId} = req.body;
+        const petition = await Petition.findById(petitionId)
+        petition.signatures.unshift({
+            comments,
+            email,
+            name,
+            address 
+        })
+  
+        const endorsementSaved = await petition.save();
+  
+        return res.status(200).json(endorsementSaved);
+     
+    } catch (err) {
+      res.status(400).json("Could not sign petition!");
     }
   });
 

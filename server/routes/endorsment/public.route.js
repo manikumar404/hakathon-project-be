@@ -31,7 +31,7 @@ publicUsersEndorsement.get("/get-endorsement", async (req, res) => {
     const {skip,limit} = req.query;
     try {
         const endorsements = await Endorsement.find({},
-          'title description image user comments',
+          'title description image user comments goal roleTitle category roleDescription endorse',
           {skip,limit})
         return res.status(200).json(endorsements);
      

@@ -17,12 +17,13 @@ commonUsersPost.post("/add-post",upload.single('file'), async (req, res) => {
       });
 
       if (error) return res.status(400).json(error.details[0].message);
-      const {title, description} = req.body;
+      const {title, description,category} = req.body;
       const user = await Users.findById(req.user._id);        
       const post = new Post({
         title,
         description,
         image,
+        category,
         user: {
         name: user.name,
         id: user._id,
