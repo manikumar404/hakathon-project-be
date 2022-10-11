@@ -10,7 +10,7 @@ const commonUsersPost = express.Router();
 
 commonUsersPost.post("/add-post",upload.single('file'), async (req, res) => {
   try {
-    const image = process.env.BASE_URI+'/uploads/' + req.file.filename
+    const image = process.env.BASE_URI+'/uploads/' + req.file?.filename || ''
       const { error } = postValidator.validate({
         title: req.body.title,
         description: req.body.description,

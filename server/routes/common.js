@@ -30,7 +30,7 @@ common.post("/update-password", async (req, res) => {
 
 common.post("/update-detail", upload.single('file'),async (req, res) => {
   try {
-    const image = process.env.BASE_URI+'/uploads/' + req.file.filename   
+    const image = process.env.BASE_URI+'/uploads/' + req.file?.filename || '' 
      console.log(req)
     const { error } = userUpdateValidator.validate(req.body);
     if (error) return res.status(400).json(error.details[0].message);
@@ -48,7 +48,8 @@ common.post("/update-detail", upload.single('file'),async (req, res) => {
             cid: req.body.cid,
             userType: req.body.userType,
             location: req.body.location
-        }
+        },
+        {new: true}
       );
 
       return res.status(200).json(updated);
