@@ -58,9 +58,9 @@ common.post("/update-detail", upload.single('file'),async (req, res) => {
   }
 });
 
-common.post("/get-user", async (req, res) => {
+common.get("/get-user", async (req, res) => {
   try {
-      const user = await Users.findById(req.body.userId);
+      const user = await Users.findById(req.query.userId);
       return res.status(200).json(user);
     } 
   catch (err) {
@@ -68,7 +68,7 @@ common.post("/get-user", async (req, res) => {
   }
 });
 
-common.post("/get-users", async (req, res) => {
+common.get("/get-users", async (req, res) => {
     try {
         const users = await Users.find({});
         return res.status(200).json(users);

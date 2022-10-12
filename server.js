@@ -49,7 +49,7 @@ app.use(
   },
   admin
 );
-app.use("/common", verify, common);
+app.use("/common",common);
 app.use(
   "/endorsments",
   verify,
