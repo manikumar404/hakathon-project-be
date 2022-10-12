@@ -41,5 +41,34 @@ publicUsersEndorsement.get("/get-endorsement", async (req, res) => {
     }
   });
 
+  publicUsersEndorsement.get("/get-endorsement-count", async (req, res) => {
+    const {location} = req.query;
+    try {
+        const endorsement = Endorsement.find({"user.location.dzongkhag":location})
+        endorsement.count((err,count)=>{
+          err && res.status(500).json("could not get endorsement counts!")
+          return res.status(200).json({count})
+        })
+     
+    } catch (err) {
+      res.status(500).json("could not get endorsements!");
+    }
+  });
+
+  publicUsersEndorsement.get("/get-endorsements-by-loc", async (req, res) => {
+    const {location,limit,skip} = req.query;
+    try {
+        const endorsements = await Endorsement.find({"user.location.dzongkhag":location},
+        'title description image user comments goal roleTitle category roleDescription endorse',
+        {limit,skip}
+        )
+        return res.status(200).json(endorsements);
+     
+    } catch (err) {
+      console.log(err)
+      res.status(500).json("could not get endorsements!");
+    }
+  });
+
 
 module.exports = publicUsersEndorsement;

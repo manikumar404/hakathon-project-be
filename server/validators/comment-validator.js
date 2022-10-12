@@ -1,8 +1,9 @@
 const joi = require("joi");
 
 const commentValidator = joi.object({
-  comment: joi.string().required(),
+  comment: joi.string(),
   endorsementId: joi.string().required(),
+  rating: joi.number()
 
 });
 

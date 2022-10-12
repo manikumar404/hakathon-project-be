@@ -41,5 +41,34 @@ publicUsersPost.get("/get-post", async (req, res) => {
     }
   });
 
+  publicUsersPost.get("/get-posts-count", async (req, res) => {
+    const {location} = req.query;
+    try {
+        const posts = Post.find({"user.location.dzongkhag":location})
+        posts.count((err,count)=>{
+          err && res.status(500).json("could not get post counts!")
+          return res.status(200).json({count})
+        })
+     
+    } catch (err) {
+      res.status(500).json("could not get posts!");
+    }
+  });
+
+  publicUsersPost.get("/get-post-by-loc", async (req, res) => {
+    const {location,limit,skip} = req.query;
+    try {
+        const post = await Post.find({"user.location.dzongkhag":location},
+        'title description image user comments category',
+        {limit,skip}
+        )
+        return res.status(200).json(post);
+     
+    } catch (err) {
+      console.log(err)
+      res.status(500).json("could not get posts!");
+    }
+  });
+
 
 module.exports = publicUsersPost;

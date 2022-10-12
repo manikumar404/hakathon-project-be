@@ -87,11 +87,12 @@ commonUsersPost.post("/comment-post", async (req, res) => {
         const { error } = commentValidator.validate(req.body);
   
         if (error) return res.status(400).json(error.details[0].message);
-        const {comment,petitionId} = req.body;
+        const {comment,petitionId,rating} = req.body;
         const user = await Users.findById(req.user._id)
         const post = await Post.findById(petitionId)
         post.comments.unshift({
             comment,
+            rating,
             user:{
                 name: user.name,
                 id: user._id,

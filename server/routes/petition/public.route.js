@@ -41,5 +41,34 @@ publicUsersPetition.get("/get-petition", async (req, res) => {
     }
   });
 
+  publicUsersPetition.get("/get-petition-count", async (req, res) => {
+    const {location} = req.query;
+    try {
+        const posts = Petition.find({"user.location.dzongkhag":location})
+        posts.count((err,count)=>{
+          err && res.status(500).json("could not get petition counts!")
+          return res.status(200).json({count})
+        })
+     
+    } catch (err) {
+      res.status(500).json("could not get petition!");
+    }
+  });
+
+  publicUsersPetition.get("/get-petitions-by-loc", async (req, res) => {
+    const {location,limit,skip} = req.query;
+    try {
+        const petitions = await Petition.find({"user.location.dzongkhag":location},
+        'title description image user comments category goal signatures',
+        {limit,skip}
+        )
+        return res.status(200).json(petitions);
+     
+    } catch (err) {
+      console.log(err)
+      res.status(500).json("could not get petition!");
+    }
+  });
+
 
 module.exports = publicUsersPetition;

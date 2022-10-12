@@ -34,6 +34,7 @@ var schema = new mongoose.Schema({
     comments:[
         {
             comment: String,
+            rating: Number,
             user : {
                 name: String,
                 id: String,
