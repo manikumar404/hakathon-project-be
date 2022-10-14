@@ -3,35 +3,44 @@ const userValidator = require("../validators/userValidator.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Users = require("../model/users.js");
+const upload = require("../services/fileUploader");
+
 
 const auth = express.Router();
 
-auth.post("/register", async (req, res) => {
+auth.post("/register", upload.single('file'),async (req, res) => {
   try {
-    const { error } = userValidator.validate(req.body);
-    if (error) return res.status(400).json(error.details[0].message);
+    // const { error } = userValidator.validate(req.body);
+    // if (error) return res.status(400).json(error.details[0].message);
+    const image = process.env.BASE_URI+'/uploads/' + req.file?.filename || '' 
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
         const newUser = new Users({
           name: req.body.name,
           email: req.body.email,
-          gender: req.body.gender,
           password: hashedPassword,
           contact: req.body.contact,
           cid: req.body.cid,
-          userType: req.body.userType,
-          location: req.body.location
+          location: req.body.location,
+          profile: image,
+          location: {
+            dzongkhag: req.body.location
+          }
+
         });
         const user = await newUser.save();
         res.status(200).send(user);
   } catch (err) {
     if (err.code) {
+      console.log(err)
       res.status(500).json("Email is already used");
     } else {
       res.status(500).json("Internal server error");
     }
   }
 });
+
 
 auth.post("/login", async (req, res) => {
   const { password, email } = req.body;

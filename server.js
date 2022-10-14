@@ -15,6 +15,7 @@ const commonUsersPetition = require("./server/routes/petition/commonUsers.js");
 const publicUsersPetition = require("./server/routes/petition/public.route.js");
 const commonUsersPost = require("./server/routes/post/commonUsers.js");
 const publicUsersPost = require("./server/routes/post/public.route.js");
+const Chats = require("./server/routes/chats.route")
 
 const test = require("./server/routes/test.js");
 
@@ -60,6 +61,11 @@ app.use(
   "/public-endorsments",
   publicUsersEndorsement
 );
+
+app.use(
+  "/chats",
+  Chats
+)
 
 
 app.use(

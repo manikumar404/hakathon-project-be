@@ -11,8 +11,6 @@ var schema = new mongoose.Schema({
     },
     gender : {
         type: String,
-        enum : ['Male','Female','Others'],
-       
     },
      password : {
          type:String,
@@ -40,7 +38,7 @@ var schema = new mongoose.Schema({
     userType:{
         type:String,
         enum : ['User','Admin'],
-        default: 'user'
+        default: 'User'
         
     },
     contact: String,
