@@ -3,7 +3,8 @@ const bcrypt = require("bcrypt");
 const Users = require("../model/users.js");
 const passwordValidator = require("../validators/passwordValidator.js");
 const userUpdateValidator = require("../validators/userUpdateValidator.js");
-const upload = require("../services/fileUploader")
+const upload = require("../services/fileUploader");
+const { rawListeners } = require("../model/users.js");
 
 
 const common = express.Router();
@@ -78,4 +79,53 @@ common.post("/get-users", async (req, res) => {
     }
   });
 
+common.get("/get-users-by-loc", async (req, res) => {
+    const {location,limit,skip} = req.query;
+    try {
+        const petitions = await Users.find({"location.dzongkhag":location},
+        'name email gender profile bio occupation contact followers following',
+        {limit,skip}
+        )
+        return res.status(200).json(petitions);
+     
+    } catch (err) {
+      res.status(500).json("could not get users!");
+    }
+  });
+
+  common.get("/get-user-count", async (req, res) => {
+    const {location} = req.query;
+    try {
+        const posts = Users.find({"location.dzongkhag":location})
+        posts.count((err,count)=>{
+          err && res.status(500).json("could not get user counts!")
+          return res.status(200).json({count})
+        })
+     
+    } catch (err) {
+      res.status(500).json("could not get users!");
+    }
+  });
+
+  common.post("/follow-user", async (req, res) => {
+    try {
+        const user = await Users.findById(req.body.id);
+        user.following.push({
+          userId: req.body.userId,
+          name: req.body.follower
+        })
+        await user.save()
+
+        const followed = await Users.findById(req.body.userId);
+        user.followers.push({
+          userId: req.body.id,
+          name: req.body.name
+        })
+        await followed.save()
+        return res.status(200).json("user followed successfully");
+      } 
+    catch (err) {
+      res.status(500).json("Could not find users !");
+    }
+  });
 module.exports = common;

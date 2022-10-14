@@ -1,6 +1,8 @@
 const express = require("express");
 const Endorsement = require("../../model/endorsement.js");
 const publicUsersEndorsement = express.Router();
+const commentValidator = require("../../validators/comment-validator")
+const Users = require("../../model/users")
 
 
 publicUsersEndorsement.get("/get-endorsement", async (req, res) => {
@@ -67,6 +69,28 @@ publicUsersEndorsement.get("/get-endorsement", async (req, res) => {
     } catch (err) {
       console.log(err)
       res.status(500).json("could not get endorsements!");
+    }
+  });
+
+  publicUsersEndorsement.post("/endorse-endorsement", async (req, res) => {
+    try {
+        const { error } = commentValidator.validate({comment:req.body.comment,endorsementId: req.body.endorsementId});
+  
+        if (error) return res.status(400).json(error.details[0].message);
+        const {comment,email,endorsementId} = req.body;
+        const user = await Users.findById(req.user._id)
+        const endorsement = await Endorsement.findById(endorsementId)
+        endorsement.endorse.unshift({
+            comment,
+            email,  
+        })
+  
+        const endorsementSaved = await endorsement.save();
+  
+        return res.status(200).json(endorsementSaved);
+     
+    } catch (err) {
+      res.status(400).json("Could not endorse!");
     }
   });
 

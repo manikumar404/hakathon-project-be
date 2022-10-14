@@ -18,6 +18,22 @@ var schema = new mongoose.Schema({
          type:String,
          required:true
     },
+    followers: [
+        {
+            userId: {
+                type: String,
+                required: true
+            },
+            name: String
+        }
+    ],
+    following: [{
+        userId: {
+            type: String,
+            required: true
+        },
+        name: String
+    }],
     profile: String,
     bio: String,
     occupation: String,

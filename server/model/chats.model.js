@@ -1,42 +1,19 @@
 const mongoose = require('mongoose');
 
 var schema = new mongoose.Schema({
-    name : {
-        type : String,
-        required: true
-    },
-    email : {
+    id: {
         type: String,
         required: true,
     },
-    gender : {
-        type: String,
-        enum : ['Male','Female','Others'],
-       
+    message : {
+        type : String,
+        required: true
     },
-     password : {
-         type:String,
-         required:true
-    },
-    profile: String,
-    bio: String,
-    occupation: String,
-    userType:{
-        type:String,
-        enum : ['User','Admin'],
-        default: 'user'
-        
-    },
-    contact: String,
-    cid: String,
-    location:{
-        dzongkhag: String,
-        geog: String,
-    }
+    
 },
 {timestamps:true}
 )
 
-const Users = mongoose.model('Users', schema);
+const Chats= mongoose.model('Chats', schema);
 
-module.exports = Users;
+module.exports = Chats
