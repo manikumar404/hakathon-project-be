@@ -29,6 +29,10 @@ var schema = new mongoose.Schema({
     {
         email: String,
         comment: String,
+        time: {
+            type: String,
+            default: new Date()
+        },
     }
    ],
    
@@ -36,6 +40,10 @@ var schema = new mongoose.Schema({
         {
             comment: String,
             rating: Number,
+            time: {
+                type: String,
+                default: new Date()
+            },
             user : {
                 name: String,
                 id: String,

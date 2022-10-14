@@ -29,12 +29,20 @@ var schema = new mongoose.Schema({
             name: String,
             comments: String,
             addtrss: String,
+            time: {
+                type: String,
+                default: new Date()
+            },
         }
     ],
     comments:[
         {
             comment: String,
             rating: Number,
+            time: {
+                type: String,
+                default: new Date()
+            },
             user : {
                 name: String,
                 id: String,
