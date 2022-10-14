@@ -115,9 +115,6 @@ commonUsersPetition.post("/comment-petition", async (req, res) => {
 
   commonUsersPetition.post("/sign-petition", async (req, res) => {
     try {
-        const { error } = commentValidator.validate(req.body);
-  
-        if (error) return res.status(400).json(error.details[0].message);
         const {comments,email,name,address,petitionId} = req.body;
         const petition = await Petition.findById(petitionId)
         petition.signatures.unshift({
