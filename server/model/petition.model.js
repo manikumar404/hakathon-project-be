@@ -49,6 +49,7 @@ var schema = new mongoose.Schema({
                 id: String,
                 email: String,
                 contact: String,
+                profile: String,
                 cid: String,
                 location:{
                     dzongkhag: String,

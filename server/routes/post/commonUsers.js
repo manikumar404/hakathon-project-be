@@ -85,9 +85,9 @@ commonUsersPost.post("/delete-post", async (req, res) => {
 
 commonUsersPost.post("/comment-post", async (req, res) => {
     try {
-        const { error } = commentValidator.validate(req.body);
-  
-        if (error) return res.status(400).json(error.details[0].message);
+        // const { error } = commentValidator.validate(req.body);
+        //
+        // if (error) return res.status(400).json(error.details[0].message);
         const {comment,petitionId,rating} = req.body;
         const user = await Users.findById(req.user._id)
         const post = await Post.findById(petitionId)
@@ -99,6 +99,7 @@ commonUsersPost.post("/comment-post", async (req, res) => {
                 id: user._id,
                 email: user.email,
                 contact: user.contact,
+                profile: user.profile,
                 cid: user.cid,
                 location:user.location,
             }

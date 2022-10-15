@@ -102,6 +102,7 @@ commonUsersEndorsement.post("/comment-endorsement", async (req, res) => {
                 id: user._id,
                 email: user.email,
                 contact: user.contact,
+                profile: user.profile,
                 cid: user.cid,
                 location:user.location,
             }
@@ -112,6 +113,7 @@ commonUsersEndorsement.post("/comment-endorsement", async (req, res) => {
         return res.status(200).json(endorsementSaved);
      
     } catch (err) {
+        console.log(err)
       res.status(400).json("Could not comment endorsment!");
     }
   });

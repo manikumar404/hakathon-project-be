@@ -86,12 +86,13 @@ commonUsersPetition.post("/delete-petition", async (req, res) => {
 
 commonUsersPetition.post("/comment-petition", async (req, res) => {
     try {
-        const { error } = commentValidator.validate(req.body);
-  
-        if (error) return res.status(400).json(error.details[0].message);
+        // const { error } = commentValidator.validate(req.body);
+        //
+        // if (error) return res.status(400).json(error.details[0].message);
         const {comment,petitionId, rating} = req.body;
         const user = await Users.findById(req.user._id)
         const petition = await Petition.findById(petitionId)
+        console.log(user)
         petition.comments.unshift({
             comment,
             rating,
@@ -100,12 +101,14 @@ commonUsersPetition.post("/comment-petition", async (req, res) => {
                 id: user._id,
                 email: user.email,
                 contact: user.contact,
+                profile: user.profile,
                 cid: user.cid,
                 location:user.location,
             }
         })
   
         const endorsementSaved = await petition.save();
+        console.log(endorsementSaved)
   
         return res.status(200).json(endorsementSaved);
      
