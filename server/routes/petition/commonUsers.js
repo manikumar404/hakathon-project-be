@@ -27,6 +27,7 @@ commonUsersPetition.post("/add-petition",upload.single('file'), async (req, res)
         goal,
         user: {
         name: user.name,
+            profile: user.profile,
         id: user._id,
         email: user.email,
         contact: user.email,

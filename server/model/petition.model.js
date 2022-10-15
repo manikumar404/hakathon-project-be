@@ -18,6 +18,7 @@ var schema = new mongoose.Schema({
         email: String,
         contact: String,
         cid: String,
+        profile: String,
         location:{
             dzongkhag: String,
             geog: String,

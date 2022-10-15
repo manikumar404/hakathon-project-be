@@ -27,6 +27,7 @@ commonUsersPost.post("/add-post",upload.single('file'), async (req, res) => {
         user: {
         name: user.name,
         id: user._id,
+            profile: user.profile,
         email: user.email,
         contact: user.email,
         cid: user.cid,

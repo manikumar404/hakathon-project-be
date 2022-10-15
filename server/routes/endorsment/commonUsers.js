@@ -30,8 +30,9 @@ commonUsersEndorsement.post("/add-endorsement",upload.single('file'), async (req
         user: {
         name: user.name,
         id: user._id,
+            profile: user.profile,
         email: user.email,
-        contact: user.email,
+        contact: user.contact,
         cid: user.cid,
         location: user.location
         }
